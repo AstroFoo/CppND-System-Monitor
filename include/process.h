@@ -7,17 +7,24 @@ Basic class for Process representation
 It contains relevant attributes as shown below
 */
 class Process {
- public:
-  int Pid();                               // TODO: See src/process.cpp
-  std::string User();                      // TODO: See src/process.cpp
-  std::string Command();                   // TODO: See src/process.cpp
-  float CpuUtilization();                  // TODO: See src/process.cpp
-  std::string Ram();                       // TODO: See src/process.cpp
-  long int UpTime();                       // TODO: See src/process.cpp
-  bool operator<(Process const& a) const;  // TODO: See src/process.cpp
+  public:
+    Process(int processId, std::string userId,  std::string command, long uptime, long ram, float cpuUtilization);
+    int Pid() const;
+    std::string User() const;
+    std::string Command() const;
+    float CpuUtilization() const;
+    long Ram() const;
+    long int UpTime() const;
+    bool operator<(Process const& a) const;
+    bool operator>(Process const& a) const;
 
-  // TODO: Declare any necessary private members
- private:
+  private:
+    int _id;
+    std::string _userId;
+    std::string _command;
+    long _uptime;
+    long _ram;
+    float _cpuUtilization;
 };
 
 #endif
