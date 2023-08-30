@@ -11,6 +11,15 @@
 using std::string;
 using std::to_string;
 
+// Suggestion based on reviewer feedback: https://review.udacity.com/#!/reviews/4099320
+// Truncate string to 50 characters and append "..." if larger.
+string TruncateCommandString(string command)
+{
+  if (command.size() > 50)
+    return command.substr(0,49) + "...";
+  return command;
+}
+
 // 50 bars uniformly displayed from 0 - 100 %
 // 2% is one bar(|)
 // NOTE: this function takes a fraction between 0 and 1, not a percentage...
@@ -83,11 +92,11 @@ void NCursesDisplay::DisplayProcesses(std::vector<Process>& processes,
     mvwprintw(window, row, time_column,
               Format::ElapsedTime(processes[i].UpTime()).c_str());
     mvwprintw(window, row, command_column,
-              processes[i].Command().substr(0, window->_maxx - 46).c_str());
+              TruncateCommandString(processes[i].Command()).substr(0, window->_maxx - 46).c_str());
   }
 }
 
-void NCursesDisplay::Display(System& system, int n) {
+void NCursesDisplay::Display(System& system, int numProcesses) {
   initscr();      // start ncurses
   noecho();       // do not print input values
   cbreak();       // terminate ncurses on ctrl + c
@@ -96,7 +105,7 @@ void NCursesDisplay::Display(System& system, int n) {
   int x_max{getmaxx(stdscr)};
   WINDOW* system_window = newwin(9, x_max - 1, 0, 0);
   WINDOW* process_window =
-      newwin(3 + n, x_max - 1, system_window->_maxy + 1, 0);
+      newwin(3 + numProcesses, x_max - 1, system_window->_maxy + 1, 0);
 
   while (1) {
     init_pair(1, COLOR_BLUE, COLOR_BLACK);
@@ -104,7 +113,7 @@ void NCursesDisplay::Display(System& system, int n) {
     box(system_window, 0, 0);
     box(process_window, 0, 0);
     DisplaySystem(system, system_window);
-    DisplayProcesses(system.Processes(), process_window, n);
+    DisplayProcesses(system.Processes(), process_window, numProcesses);
     wrefresh(system_window);
     wrefresh(process_window);
     refresh();

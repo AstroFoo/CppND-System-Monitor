@@ -16,12 +16,12 @@ template<typename T> T ConvertkbToMb(T ramInkB)
 float ProcessCpuUtilization(int pid)
 {
     // Include child processes
-    long starttime = LinuxParser::UpTime(pid);
-    long totaltime = LinuxParser::ActiveTime(pid, true);
-    long elapsedtime = LinuxParser::UpTime() - starttime;
+    float starttime = (float)LinuxParser::StartTime(pid);
+    float totaltime = (float)LinuxParser::ActiveTime(pid, true);
+    float elapsedtime = (float)(LinuxParser::UpTime() - starttime);
     if (elapsedtime <= 0L)
         return 0.0;
-    return (float)(100.0*totaltime/elapsedtime); // %
+    return totaltime/elapsedtime; // Fraction between 0 and 1
 }
 
 // --- Use a cache for system info, since it's never going to change
@@ -59,7 +59,7 @@ std::vector<Process> LinuxSystemDataManager::GetProcesses()
     {
         std::string userId = LinuxParser::User(processId);
         std::string command = LinuxParser::Command(processId);
-        long uptime = LinuxParser::UpTime(processId);
+        long uptime = LinuxParser::UpTime() - LinuxParser::StartTime(processId);
         long ram = ConvertkbToMb(LinuxParser::Ram(processId));
         float cpuUtilization = ProcessCpuUtilization(processId);
         Process process(processId, userId, command, uptime, ram, cpuUtilization);

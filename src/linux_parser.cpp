@@ -129,9 +129,9 @@ float LinuxParser::MemoryUtilization()
       std::istringstream linestream(line);
       while (linestream >> key >> value)
       {
-        if (key == "MemTotal:")
+        if (key == filterMemTotalString)
             memTotal = value;
-        else if (key == "MemFree:")
+        else if (key == filterMemFreeString)
             memFree = value;
       }
     }
@@ -197,7 +197,7 @@ int LinuxParser::TotalProcesses()
       std::istringstream linestream(line);
       while (linestream >> key >> value)
       {
-        if (key == "processes")
+        if (key == filterProcesses)
             return value;
       }
     }
@@ -218,7 +218,7 @@ int LinuxParser::RunningProcesses()
       std::istringstream linestream(line);
       while (linestream >> key >> value)
       {
-        if (key == "procs_running")
+        if (key == filterRunningProcesses)
             return value;
       }
     }
@@ -271,7 +271,10 @@ long LinuxParser::Ram(int pid)
       std::istringstream linestream(line);
       while (linestream >> key >> value)
       {
-        if (key == "VmSize:")
+        // I am using VmRSS here instead of VmSize as suggested by the reviewer here:
+        // https://review.udacity.com/#!/reviews/4099320 because this value gives the
+        // "exact physical memory being used".
+        if (key == filterProcMem)
             return value;
       }
     }
@@ -292,7 +295,7 @@ string LinuxParser::Uid(int pid)
       std::istringstream linestream(line);
       while (linestream >> key >> value)
       {
-        if (key == "Uid:")
+        if (key == filterUID)
             return value;
       }
     }
@@ -300,7 +303,7 @@ string LinuxParser::Uid(int pid)
   return string();
 }
 
-long LinuxParser::UpTime(int pid)
+long LinuxParser::StartTime(int pid)
 {
   vector<string> processStats = GetProcessStats(pid);
   if (processStats.size() > 22)

@@ -18,6 +18,15 @@ const std::string kVersionFilename{"/version"};
 const std::string kOSPath{"/etc/os-release"};
 const std::string kPasswordPath{"/etc/passwd"};
 
+// Following code was provided by the reviewer here:
+// https://review.udacity.com/#!/reviews/4099320
+const std::string filterProcesses("processes");
+const std::string filterRunningProcesses("procs_running");
+const std::string filterMemTotalString("MemTotal:");
+const std::string filterMemFreeString("MemFree:");
+const std::string filterUID("Uid:");
+const std::string filterProcMem("VmRSS:");
+
 // Helper methods
 template<typename T> T ConvertTicksToSeconds(T timeInTicks);
 
@@ -53,7 +62,7 @@ std::string Command(int pid);
 long Ram(int pid);
 std::string Uid(int pid);
 std::string User(int pid);
-long int UpTime(int pid);
+long int StartTime(int pid);
 };  // namespace LinuxParser
 
 #endif
